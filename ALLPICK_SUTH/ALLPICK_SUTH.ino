@@ -32,7 +32,7 @@ NTPClient timeClient(ntpUDP,ntp,7*3600);//SET TIMEZONE
 
 
 
-//============SET FOR USE BOT===============7==================
+//============SET FOR USE BOT================================= แก้ไขได้
 
 #define FIREBASE_HOST "https://isara-prototype.firebaseio.com"
 #define FIREBASE_AUTH "wFUPI7gfMcYaa6dX0ru6BGc2JrgoikZL8OVQRApo"
@@ -53,8 +53,8 @@ String botName = "prototype_00";//<<--Unique Per Bot
 
 
 
-FirebaseData firebaseData;
-FirebaseJson json;
+FirebaseData firebaseData;//ไม่ต้องแก้ไขก็ได้
+FirebaseJson json; //ไม่ต้องแก้ไขก็ได้
 
 OneWire  ds(2); //D4 or GPIO2 *สามารถแก้ไขได้
 
@@ -270,35 +270,7 @@ void connection(){//สำหรับ WiFi และ Line Notify
   //Size and its write timeout e.g. tiny (1s), small (10s), medium (30s) and large (60s).
   Firebase.setwriteSizeLimit(firebaseData, "tiny");
 
-  String lineToken;
-
   
-  if (Firebase.get(firebaseData, "/settingBot/"+botName+"/tokenLine"))
-    {
-      Serial.println("GET tokenLine PASSED");
-      
-      lineToken = firebaseData.stringData();
-      Serial.println(lineToken);
-    }
-    else
-    {
-      Serial.println("FAILED");
-      Serial.println("REASON: " + firebaseData.errorReason());
-    }
-
-    if (Firebase.get(firebaseData, "/settingBot/"+botName+"/location"))
-    {
-      Serial.println("GET location PASS");
-      location = firebaseData.stringData();
-      Serial.println(location);
-    }
-    else
-    {
-      Serial.println("FAIL");
-      Serial.println("REASON: " + firebaseData.errorReason());
-    }
-    
-
     configTime(7*3600,0, " time.navy.mi.th", " time.navy.mi.th");     //ดึงเวลาจาก Server
     Serial.println("\nWaiting for time");
     while (!time(nullptr)) {
@@ -306,8 +278,6 @@ void connection(){//สำหรับ WiFi และ Line Notify
       delay(1000);
     }
     
-  
-  LINE.setToken(lineToken);
  
  // LINE.notify(messageOnLine+location); 
 }
@@ -365,8 +335,38 @@ void settingTemperatureBot(){
       Serial.println("REASON: " + firebaseData.errorReason());
     }
     Serial.println("-------------------------------");
-    delay(1000*.5);
+   
 
+    String lineToken;
+
+  
+  if (Firebase.get(firebaseData, "/settingBot/"+botName+"/tokenLine"))
+    {
+      Serial.println("GET tokenLine PASSED");
+      
+      lineToken = firebaseData.stringData();
+      Serial.println(lineToken);
+    }
+    else
+    {
+      Serial.println("FAILED");
+      Serial.println("REASON: " + firebaseData.errorReason());
+    }
+
+    if (Firebase.get(firebaseData, "/settingBot/"+botName+"/location"))
+    {
+      Serial.println("GET location PASS");
+      location = firebaseData.stringData();
+      Serial.println(location);
+    }
+    else
+    {
+      Serial.println("FAIL");
+      Serial.println("REASON: " + firebaseData.errorReason());
+    }
+    
+  LINE.setToken(lineToken);
+ delay(1000*.5);
 }
 //END temperature
 
